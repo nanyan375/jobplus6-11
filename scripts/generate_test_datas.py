@@ -2,14 +2,14 @@ import os
 import json
 from random import randint
 #from faker import Faker
-from jobplus.models import db, User, Job, Company, User_job
+from jobplus.models import db, User, Job, Company
 
 #fake = Faker()
 
 user_lst = [
             ['admin', 'admin', 'admin@example.com', 'jobplus', 30],
             ['ABC', 'company1', 'abc@example.com', 'jobplus', 20],
-            ['Jack Lee', 'user1', 'jacklee@example.com', 'jobplus', 30],
+            ['Jack Lee', 'user1', 'jacklee@example.com', 'jobplus', 10],
             ['Jack Ma', 'user2', 'jackma@example.com', 'jobplus', 10]
            ]
 
@@ -28,7 +28,7 @@ def iter_companies():
     yield Company(
         location='Beijing',
         logo='test',
-        user=user
+        user_id=user.id
     )
         
 def iter_jobs():
@@ -44,13 +44,6 @@ def iter_jobs():
             company=company
         )
 
-def iter_user_jobs():
-    job = Job.query.order_by(Job.id).first()
-    user = User.query.filter_by(username='user2').first()
-    yield User_job(
-        user_id=user.id,
-        job_id=job.id
-    )
  
 def run(): 
     db.create_all()
@@ -63,10 +56,6 @@ def run():
     for job in iter_jobs():
         db.session.add(job)
     
-    for user_job in iter_user_jobs():
-        db.session.add(user_job)
-
-
     try:
         db.session.commit()
     except Exception as e:

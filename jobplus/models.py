@@ -15,14 +15,9 @@ class Base(db.Model):
             default=datetime.utcnow, 
             onupdate=datetime.utcnow)
 
-class User_job(Base):
-    __tablename__ = 'user_job'
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
-    job_id = db.Column(db.Integer, db.ForeignKey('job.id'), primary_key=True)
-    #job = db.relationship("Job")
-    job_applied = db.relationship('Job', uselist=False, backref=db.backref('users', uselist=False))
-   
-    #user = db.relationship("User", backref="jobs")
+user_job  = db.Table('user_job',
+        db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+        db.Column('job_id', db.Integer, db.ForeignKey('job.id'), primary_key=True))
 
 
 class User(Base, UserMixin):
@@ -37,15 +32,16 @@ class User(Base, UserMixin):
     username = db.Column(db.String(32), unique=True, index=True, nullable=False)
     name = db.Column(db.String(32))
     email = db.Column(db.String(64), unique=True, index=True, nullable=False)
-    _password = db.Column('password', db.String(256), nullable=False)
+    _password = db.Column('password', db.String(255), nullable=False)
     role = db.Column(db.SmallInteger, default=ROLE_USER)
     work_year = db.Column(db.Integer)
     mobile = db.Column(db.Integer)
-    resume_url = db.Column(db.String(256), unique=True)
+    resume_url = db.Column(db.String(255), unique=True)
     company_detail = db.relationship('Company')
     is_disable = db.Column(db.Boolean, default=False)
-    #jobs = db.relationship('User_job', backref=db.backref('user', uselist=False))
-    
+    jobs = db.relationship('Job', secondary=user_job, backref=db.backref('users'))
+
+
     def __repr__(self):
         return '<User:{}>'.format(self.username, uselist=False)
 
@@ -79,8 +75,7 @@ class Job(Base):
     is_disable = db.Column(db.Boolean, default=False)
     company_id = db.Column(db.Integer, db.ForeignKey('company.id', ondelete='CASCADE'))
     company = db.relationship('Company', uselist=False)
-    #users = db.relationship('User_job')
-     
+    
     @property
     def url(self):
         return url_for('job.detail', job_id=self.id)
@@ -92,19 +87,19 @@ class Company(Base):
     __tablename__ = 'company'
 
     id = db.Column(db.Integer, primary_key=True)
-    description = db.Column(db.String(256))
+    description = db.Column(db.String(255))
     location = db.Column(db.String(64))
     scale = db.Column(db.String(64))
     workers_num = db.Column(db.String(32))
-    logo = db.Column(db.String(256))
+    logo = db.Column(db.String(255))
     site = db.Column(db.String(128))
     tags = db.Column(db.String(128))
     field = db.Column(db.String(64))
     finance_stage = db.Column(db.String(64))
-    welfares = db.Column(db.String(256))
+    welfares = db.Column(db.String(255))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='SET NULL'))
     user = db.relationship('User', uselist=False, backref=db.backref('company', uselist=False))
-    #jobs = db.relationship('Job')
+    jobs = db.relationship('Job') #此行有用请勿隐藏
 
     @property
     def url(self):
