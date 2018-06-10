@@ -37,7 +37,7 @@ class User(Base, UserMixin):
     work_year = db.Column(db.Integer)
     mobile = db.Column(db.Integer)
     resume_url = db.Column(db.String(255), unique=True)
-    company_detail = db.relationship('Company')
+    company_detail = db.relationship('Company') 
     is_disable = db.Column(db.Boolean, default=False)
     jobs = db.relationship('Job', secondary=user_job, backref=db.backref('users'))
 

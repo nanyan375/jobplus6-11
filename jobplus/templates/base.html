@@ -23,10 +23,13 @@
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="{{ url_for('job.index') }}">职位<span class="sr-only">(current)</span></a></li>
-                    <li><a href="{{ url_for('company.index') }}">企业</a></li>
+                    <li class="{% if active == 'job' %}active{% endif %}"><a href="{{ url_for('job.index') }}">职位<span class="sr-only">(current)</span></a></li>
+                    <li class="{% if active == 'company' %}active{% endif %}"><a href="{{ url_for('company.index') }}">企业<span class="sr-only">(current)</span></a></li>
                     {% if current_user.is_authenticated and current_user.is_admin %}
                     <li><a href="{{ url_for('admin.index') }}">控制台</a></li>
+                    {% endif %}
+		    {% if current_user.is_authenticated and current_user.is_company %}
+                    <li><a href="{{ url_for('company.company_admin', company_id=current_user.id) }}">职位管理</a></li>
                     {% endif %}
                 </ul>
                 <ul class="nav navbar-nav navbar-right">

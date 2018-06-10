@@ -69,4 +69,5 @@ def disable_job(job_id):
         job.is_disable = True
         db.session.add(job)
         db.session.commit()
-        return redirect(url_for('admin.jobs'))  
+        return redirect(url_for('admin.jobs'))
+
