@@ -19,7 +19,7 @@
                                     <li class="salary"><span>{{ job.salary }}</span></li>
                                     <li class="cities">{{ job.location }}</li>
                                     <li>{{ job. experience }}</li>
-                                    <li><span class="ml5 inline-block"></span></li>
+                                    <li><span class="ml5 inline-block"></span>{{ job.company.user.name }}</li>
                                 </ul>
                             </div>
                         </div>
@@ -42,10 +42,18 @@
                 <div class="bg-gray job-detail__foot">
                     <div class="row">
                         <div class="col-md-6">                          
-                            {% if job.users == [] %}
+                            <!--{% if job.users == [] %}
                             <a href="/job/{{ job.id }}/apply" class="btn btn-primary btn-lg submit-resume">投简历</a>
                             {% else %}
                             <a href="#" class="btn btn-primary btn-lg submit-resume disabled">投简历</a>
+                            {% endif %}-->
+                            <!-- 如果当前用户是求职者，则显示投简历按钮，如果是公司，则显示上线/下线按钮 -->
+                            <!-- 如果当前用户是管理员，则不显示按钮 -->
+                            {% if current_user.role == 10 %}
+                            <a href="/job/{{ job.id }}/apply" class="btn btn-primary btn-lg submit-resume">投简历</a>
+                            {% elif current_user.role == 20 and job.company.user.id == current_user.id %}
+                            <a href="/job/{{ job.id }}/enable" class="btn btn-primary btn-lg submit-resume">上线</a>
+                            <a href="/job/{{ job.id }}/disable" class="btn btn-primary btn-lg submit-resume">下线</a>
                             {% endif %}
                         </div>
                     </div>

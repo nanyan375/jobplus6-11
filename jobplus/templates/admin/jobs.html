@@ -32,8 +32,11 @@
                     <a href="#" type='button'>
                         编辑
                     </a>
-                    <a href='#' type='button'>
-                        {% if job.is_diable %}上线{% else %}下线{% endif %}
+                    {% if job.is_disable %}
+                        <a href="{{ url_for('job.enable_job', job_id=job.id) }}" type='button'>上线</a>
+                    {% else %}
+                        <a href="{{ url_for('job.disable_job', job_id=job.id) }}" type='button'>下线</a>
+		    {% endif %}
                     </a>
                 </div>
             </td>

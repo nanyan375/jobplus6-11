@@ -34,15 +34,29 @@
                     <h5 class="widget-job-list__heading">招聘职位</h5>
                     <ul class="widget-job-list__list">
                         {% for job in company.jobs[0:2] %}
-                        <li class="widget-job-list__item">
-                        <a href="{{ job.url }}">
-                            <h3 class="widget-job-list__item--title">{{ job.title }}</h3>
-                        </a>
-                        <p class=" widget-job-list__item--detail">
-                        <span class="salary">{{ job.salary }}</span>
-                        <span class="experience">{{ job.experience }}</span>
-                        </p>
-                        </li>
+			    <!-- 当职位上线时 -->
+			    {% if not job.is_disable %}
+		                <li class="widget-job-list__item">
+		                <a href="{{ job.url }}">
+		                    <h3 class="widget-job-list__item--title">{{ job.title }}</h3>
+		                </a>
+		                <p class=" widget-job-list__item--detail">
+		                <span class="salary">{{ job.salary }}</span>
+		                <span class="experience">{{ job.experience }}</span>
+		                </p>
+		                </li>
+			    <!-- 当职位下线时，对求职者和未登录用户不显示，但对企业和管理员显示 -->
+			    {% elif current_user.is_authenticated and current_user.role > 10 %}
+				<li class="widget-job-list__item">
+		                <a href="{{ job.url }}">
+		                    <h3 class="widget-job-list__item--title">{{ job.title }}</h3>
+		                </a>
+		                <p class=" widget-job-list__item--detail">
+		                <span class="salary">{{ job.salary }}</span>
+		                <span class="experience">{{ job.experience }}</span>
+		                </p>
+		                </li>
+			    {% endif %}
                         {% endfor %}
                     </ul>
                 </div>

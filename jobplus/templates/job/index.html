@@ -8,17 +8,33 @@
     {% for job in pagination.items %}
     <div class="col-sm-6 col-md-4 course">
         <div class="thumbnail">
-            <div class="caption">
-                <a href="{{ job.url }}" target="_blank">
-                    <h4 class="job__name">{{ job.title }}</h4>
-                </a>
-                <p class="job__salary">{{ job.salary }}</p>
-                <p class="job__location">{{ job.location }}</p>
-                <a href="{{ job.company.url }}" target="_blank">
-                    <h4 class="job__company">{{ job.company.user.name }}</h4>
-                </a>
-                <p class="job__created_at">{{ job.created_at }}</p>
-            </div>
+            <!-- 当职位上线时 -->
+            {% if not job.is_disable %}
+                <div class="caption">
+                    <a href="{{ job.url }}" target="_blank">
+                        <h4 class="job__name">{{ job.title }}</h4>
+                    </a>
+                    <p class="job__salary">{{ job.salary }}</p>
+                    <p class="job__location">{{ job.location }}</p>
+                    <a href="{{ job.company.url }}" target="_blank">
+                        <h4 class="job__company">{{ job.company.user.name }}</h4>
+                    </a>
+                    <p class="job__created_at">{{ job.created_at }}</p>
+                </div>
+	    <!-- 当职位下线时，对求职者和未登录用户不显示，但对企业和管理员显示 -->
+            {% elif current_user.is_authenticated and current_user.role>10 %}
+                <div class="caption">
+                    <a href="{{ job.url }}" target="_blank">
+                        <h4 class="job__name">{{ job.title }}</h4>
+                    </a>
+                    <p class="job__salary">{{ job.salary }}</p>
+                    <p class="job__location">{{ job.location }}</p>
+                    <a href="{{ job.company.url }}" target="_blank">
+                        <h4 class="job__company">{{ job.company.user.name }}</h4>
+                    </a>
+                    <p class="job__created_at">{{ job.created_at }}</p>
+                </div>
+            {% endif %}
         </div>
     </div>
     {% endfor %}
