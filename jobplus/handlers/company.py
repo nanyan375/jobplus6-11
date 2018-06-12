@@ -46,15 +46,18 @@ def detail(company_id):
     company = Company.query.get_or_404(company_id)
     return render_template('company/detail.html', company=company)
 
-@company.route('/<int:company_id>/job/admin', methods=['GET', 'POST'])
+@company.route('/job/admin', methods=['GET', 'POST'])
 @login_required
-def company_admin(company_id):
-    if current_user.role != 20 or current_user.id != company_id:
+def company_admin():
+    #这里设置的权限是只有企业才能有职位管理的接口
+    #管理员虽然也有权限，但它的接口在控制台
+    if current_user.role != 20:
         abort(404)
     page = request.args.get('page', default=1, type=int)
-    pagination = Job.query.filter_by(company_id=company_id).paginate(
+    pagination = Job.query.filter_by(company_id=current_user.id).paginate(
             page = page,
             per_page = current_app.config['INDEX_PER_PAGE'],
             error_out = False
             )
     return render_template('company/admin.html', pagination=pagination)
+

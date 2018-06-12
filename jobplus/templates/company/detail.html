@@ -33,7 +33,7 @@
                 <div class="widget-job-list widget-job-list-company-detail">
                     <h5 class="widget-job-list__heading">招聘职位</h5>
                     <ul class="widget-job-list__list">
-                        {% for job in company.jobs[0:2] %}
+                        {% for job in company.user.job[0:2] %}
 			    <!-- 当职位上线时 -->
 			    {% if not job.is_disable %}
 		                <li class="widget-job-list__item">

@@ -32,7 +32,7 @@ def iter_companies():
     )
         
 def iter_jobs():
-    company = Company.query.order_by(Company.id).first()
+    company = User.query.filter_by(name='ABC').first()
     with open(os.path.join(os.path.dirname(__file__), '..', 'datas', 'jobs.json'), encoding='utf-8') as f:
         jobs = json.load(f)
     for job in jobs:

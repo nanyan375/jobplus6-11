@@ -41,7 +41,6 @@ class User(Base, UserMixin):
     is_disable = db.Column(db.Boolean, default=False)
     jobs = db.relationship('Job', secondary=user_job, backref=db.backref('users'))
 
-
     def __repr__(self):
         return '<User:{}>'.format(self.username, uselist=False)
 
@@ -73,8 +72,9 @@ class Job(Base):
     experience = db.Column(db.String(128), default='经验不限')
     location = db.Column(db.String(128), nullable=False)
     is_disable = db.Column(db.Boolean, default=False)
-    company_id = db.Column(db.Integer, db.ForeignKey('company.id', ondelete='CASCADE'))
-    company = db.relationship('Company', uselist=False)
+    company_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
+    company = db.relationship('User', uselist=False, backref=db.backref('job', lazy='dynamic'))
+    #company_detail = db.relationship('Company', uselist=False)
     
     @property
     def url(self):
@@ -99,7 +99,7 @@ class Company(Base):
     welfares = db.Column(db.String(255))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='SET NULL'))
     user = db.relationship('User', uselist=False, backref=db.backref('company', uselist=False))
-    jobs = db.relationship('Job') #此行有用请勿隐藏
+    #jobs = db.relationship('Job') #此行有用请勿隐藏
 
     @property
     def url(self):

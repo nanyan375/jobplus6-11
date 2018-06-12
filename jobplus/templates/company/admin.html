@@ -19,7 +19,7 @@
       {% for job in pagination.items %}
       <tr>
         <td>{{ job.id }}</td>
-        <td>{{ job.name }}</td>
+        <td>{{ job.title }}</td>
         <td>{{ job.created_at }}</td>
         <td>{% if job.is_disable %}已下线{% else %}上线中{% endif %}</td>
         <td>
