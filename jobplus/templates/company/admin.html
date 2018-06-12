@@ -2,7 +2,7 @@
 {% from 'macros.html' import render_pagination %}
 
 {% block operation %}
-<a href="#" type="button" class="btn btn-success btn-admin">添加职位</a>
+<a href="{{ url_for('company.job_add') }}" type="button" class="btn btn-success btn-admin">添加职位</a>
 {% endblock %}
 
 {% block admin %}
@@ -36,7 +36,7 @@
             <a href="#" type="button" class="btn btn-default">
               编辑
             </a>
-            <a href="#" type="button" class="btn btn-default">
+            <a href="{{ url_for('company.job_delete', job_id=job.id) }}" type="button" class="btn btn-default">
               删除
             </a>
           </div>

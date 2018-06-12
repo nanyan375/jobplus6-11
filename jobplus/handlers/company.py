@@ -2,8 +2,8 @@
 
 from flask import render_template,url_for,Blueprint,flash,redirect,request, current_app, abort
 from flask_login import login_required, current_user
-from jobplus.models import User,Company,Job
-from jobplus.forms import CompanyForm
+from jobplus.models import db,User,Company,Job
+from jobplus.forms import CompanyForm, JobForm
 
 company = Blueprint('company', __name__, url_prefix='/company')
 
@@ -61,3 +61,27 @@ def company_admin():
             )
     return render_template('company/admin.html', pagination=pagination)
 
+@company.route('/job/new', methods=['GET', 'POST'])
+@login_required
+def job_add():
+    if current_user.role != 20:
+        abort(404)
+    form = JobForm()
+    if form.validate_on_submit():
+        form.create_job(current_user)
+        flash('职位发布成功！', 'success')
+        return redirect(url_for('company.company_admin'))
+    return render_template('company/job_add.html', form=form)
+
+@company.route('job/<int:job_id>/delete', methods=['GET', 'POST'])
+@login_required
+def job_delete(job_id):
+    if current_user.role != 20:
+        abort(404)
+    job = Job.query.get_or_404(job_id)
+    if job.company_id != current_user.id:
+        abort(404)
+    db.session.delete(job)
+    db.session.commit()
+    flash('', 'success')
+    return redirect(url_for('company.company_admin'))

@@ -184,9 +184,35 @@ class UserEditForm(FlaskForm):
         db.session.commit()
 
 class JobForm(FlaskForm):
-    id = IntegerField('ID', validators=[Required()])
-    name = StringField('Job Name', validators=[Required(), Length(3, 24)])
-    company = StringField('Company Name', validators=[Required()])
-    published_at = DateTimeField('Time')
-    status = BooleanField('Status')
+    title = StringField('职位名称', validators=[Required(), Length(3, 24)])
+    salary = SelectField('工资水平', choices=[
+        ('a', '3000以下'),
+        ('b', '3000-5000'), 
+        ('c', '5000-8000'),
+        ('d', '8000-12000'), 
+        ('e', '12000以上')
+        ])
+    experience = SelectField('工作经验', choices=[
+        ('a', '不需要工作经验'), 
+        ('b', '1-3年'),
+        ('c', '3-5年'),
+        ('d', '5-10年'),
+        ('e', '10年以上')
+        ])
+    desc = StringField('职位描述', validators=[Length(8, 256)])
+    requirement = StringField('职位要求', validators=[Length(8, 256)])
+    submit = SubmitField('发布')
 
+    def create_job(self, company):
+        job = Job()
+        self.populate_obj(job)
+        job.company_id = company.id
+        db.session.add(job)
+        db.session.commit()
+        return job
+
+    def update_job(self, job):
+        self.populate_obj(job)
+        db.session.add(job)
+        db.session.commit()
+        return job

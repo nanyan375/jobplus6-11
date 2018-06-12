@@ -1,0 +1,9 @@
+{% extends 'company/admin_base.html' %}
+{% from 'macros.html' import render_form %}
+ 
+{% block title %}Publish Job{% endblock %}
+ 
+{% block admin %}
+<h4 style="text-align: center">Job Publish</h4>
+{{ render_form(form, url_for('company.job_add')) }}
+{% endblock %}

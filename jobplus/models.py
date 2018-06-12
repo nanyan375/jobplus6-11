@@ -68,9 +68,9 @@ class Job(Base):
     
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(128), nullable=False)
-    salary = db.Column(db.String(32), nullable=False)
+    salary = db.Column(db.String(32))
     experience = db.Column(db.String(128), default='经验不限')
-    location = db.Column(db.String(128), nullable=False)
+    location = db.Column(db.String(128))
     is_disable = db.Column(db.Boolean, default=False)
     company_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
     company = db.relationship('User', uselist=False, backref=db.backref('job', lazy='dynamic'))
