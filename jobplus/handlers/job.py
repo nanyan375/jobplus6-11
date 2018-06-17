@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template, redirect, url_for, request, current_app
-from jobplus.models import db, Job, User
+from flask import Blueprint, render_template, redirect, url_for, request, current_app, flash, abort
+from jobplus.models import db, Job, User, Delivery
 from flask_login import current_user,login_required
 from jobplus.forms import LoginForm
 
@@ -26,11 +26,19 @@ def detail(job_id):
 @job.route('/<int:job_id>/apply')
 @login_required
 def apply(job_id):
-    if current_user.is_authenticated:        
+    if current_user.is_authenticated:
+        if current_user.role != User.ROLE_USER:
+            abort(404)      
         job = Job.query.get_or_404(job_id)
-        user = User.query.get_or_404(current_user.id)
-        job.users.append(user)
+        # user = User.query.get_or_404(current_user.id)
+        delivery = Delivery()
+        delivery.job_id = job.id
+        delivery.user_id = current_user.id
+        delivery.company_id = job.company_id
+        db.session.add(delivery)
+        # job.users.append(user)
         db.session.commit()
+        flash('你已成功申请该职位', 'success')
         return redirect(url_for('job.detail', job_id=job_id))
         #return render_template("job/detail.html", job=job)
     else:

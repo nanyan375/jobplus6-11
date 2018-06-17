@@ -25,15 +25,15 @@
         <td>
           <div class="btn-group" role="group">
             {% if not job.is_disable %}
-            <a href="#" type="button" class="btn btn-default">
+            <a href="{{ url_for('company.job_disable', job_id=job.id) }}" type="button" class="btn btn-default">
               下线
             </a>
             {% else %}
-            <a href="#" type="button" class="btn btn-default">
+            <a href="{{ url_for('company.job_disable', job_id=job.id) }}" type="button" class="btn btn-default">
               上线
             </a>
             {% endif %}
-            <a href="#" type="button" class="btn btn-default">
+            <a href="{{ url_for('company.job_edit', job_id=job.id) }}" type="button" class="btn btn-default">
               编辑
             </a>
             <a href="{{ url_for('company.job_delete', job_id=job.id) }}" type="button" class="btn btn-default">

@@ -19,7 +19,7 @@
                                     <li class="salary"><span>{{ job.salary }}</span></li>
                                     <li class="cities">{{ job.location }}</li>
                                     <li>{{ job. experience }}</li>
-                                    <li><span class="ml5 inline-block"></span>{{ job.company.user.name }}</li>
+                                    <li><span class="ml5 inline-block"></span>{{ job.company.name }}</li>
                                 </ul>
                             </div>
                         </div>
@@ -51,7 +51,7 @@
                             <!-- 如果当前用户是管理员，则不显示按钮 -->
                             {% if current_user.role == 10 %}
                             <a href="/job/{{ job.id }}/apply" class="btn btn-primary btn-lg submit-resume">投简历</a>
-                            {% elif current_user.role == 20 and job.company.user.id == current_user.id %}
+                            {% elif current_user.role == 20 and job.company.id == current_user.id %}
                             <a href="/job/{{ job.id }}/enable" class="btn btn-primary btn-lg submit-resume">上线</a>
                             <a href="/job/{{ job.id }}/disable" class="btn btn-primary btn-lg submit-resume">下线</a>
                             {% endif %}

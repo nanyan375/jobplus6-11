@@ -2,7 +2,7 @@
 
 from flask import render_template,url_for,Blueprint,flash,redirect,request, current_app, abort
 from flask_login import login_required, current_user
-from jobplus.models import db,User,Company,Job
+from jobplus.models import db,User,Company,Job,Delivery
 from jobplus.forms import CompanyForm, JobForm
 
 company = Blueprint('company', __name__, url_prefix='/company')
@@ -85,3 +85,106 @@ def job_delete(job_id):
     db.session.commit()
     flash('', 'success')
     return redirect(url_for('company.company_admin'))
+
+@company.route('job/<int:job_id>/edit', methods=['GET', 'POST'])
+@login_required
+def job_edit(job_id):
+    if current_user.role != 20:
+        abort(404)
+    job = Job.query.get_or_404(job_id)
+    if job.company_id != current_user.id:
+        abort(404)
+    form = JobForm(obj=job)
+    if form.validate_on_submit():
+        form.update_job(current_user)
+        flash('职位更新成功！', 'success')
+        return redirect(url_for('company.company_admin'))
+    return render_template('company/job_edit.html', form=form, job=job)
+
+@company.route('job/<int:job_id>/disable', methods=['GET', 'POST'])
+@login_required
+def job_disable(job_id):
+    if current_user.role != 20:
+        abort(404)
+    job = Job.query.get_or_404(job_id)
+    if job.company_id != current_user.id:
+        abort(404)
+    if job.is_disable:
+        job.is_disable = False
+        flash('你已成功上线这个职位！', 'success')
+    else:
+        job.is_disable = True
+        flash('你已成功下线这个职位！', 'success')
+    db.session.add(job)
+    db.session.commit()
+    return redirect(url_for('company.company_admin'))
+
+@company.route('job/apply/todolist', methods=['GET', 'POST'])
+@login_required
+def apply_todolist():
+    if current_user.role != 20:
+        abort(404)
+    page = request.args.get('page', default=1, type=int)
+    q = Delivery.query.filter_by(company_id=current_user.id)
+    pagination = q.filter_by(status=Delivery.STATUS_WAITING).paginate(
+        page = page,
+        per_page = current_app.config['INDEX_PER_PAGE'],
+        error_out = False
+    )
+    return render_template('company/admin_apply.html', pagination=pagination)
+
+@company.route('job/apply/acceptlist', methods=['GET', 'POST'])
+@login_required
+def apply_acceptlist():
+    if current_user.role != 20:
+        abort(404)
+    page = request.args.get('page', default=1, type=int)
+    q = Delivery.query.filter_by(company_id=current_user.id)
+    pagination = q.filter_by(status=Delivery.STATUS_ACCEPT).paginate(
+        page = page,
+        per_page = current_app.config['INDEX_PER_PAGE'],
+        error_out = False
+    )
+    return render_template('company/admin_apply.html', pagination=pagination)
+
+@company.route('job/apply/rejectlist', methods=['GET', 'POST'])
+@login_required
+def apply_rejectlist():
+    if current_user.role != 20:
+        abort(404)
+    page = request.args.get('page', default=1, type=int)
+    q = Delivery.query.filter_by(company=current_user.id)
+    pagination = q.filter_by(status=Delivery.STATUS_REJECT).paginate(
+        page = page,
+        per_page = current_app.config['INDEX_PER_PAGE'],
+        error_out = False
+    )
+    return render_template('company/admin_apply.html', pagination=pagination)
+
+@company.route('job/apply/<int:delivery_id>/interview', methods=['GET', 'POST'])
+@login_required
+def apply_interview(delivery_id):
+    if current_user.role != 20:
+        abort(404)
+    delivery = Delivery.query.get_or_404(delivery_id)
+    if delivery.company_id != current_user.id:
+        abort(404)
+    delivery.status = Delivery.STATUS_ACCEPT
+    db.session.add(delivery)
+    db.session.commit()
+    flash('你已接收这份简历，可以安排面试了！', 'success')
+    return redirect(url_for('company.apply_todolist'))
+
+@company.route('job/apply/<int:delivery_id>/reject', methods=['GET', 'POST'])
+@login_required
+def apply_reject(delivery_id):
+    if current_user.role != 20:
+        abort(404)
+    delivery = Delivery.query.get_or_404(delivery_id)
+    if delivery.company_id != current_user.id:
+        abort(404)
+    delivery.status = Delivery.STATUS_REJECT
+    db.session.add(delivery)
+    db.session.commit()
+    flash('你已拒绝接收这份简历', 'success')
+    return redirect(url_for('company.apply_todolist'))

@@ -67,18 +67,24 @@ class Job(Base):
     __tablename__ = 'job'
     
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(128), nullable=False)
+    title = db.Column(db.String(256))
     salary = db.Column(db.String(32))
     experience = db.Column(db.String(128), default='经验不限')
     location = db.Column(db.String(128))
     is_disable = db.Column(db.Boolean, default=False)
     company_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
-    company = db.relationship('User', uselist=False, backref=db.backref('job', lazy='dynamic'))
+    company = db.relationship('User', uselist=False, backref=db.backref('job',
+                                                            lazy='dynamic'))
     #company_detail = db.relationship('Company', uselist=False)
     
     @property
     def url(self):
         return url_for('job.detail', job_id=self.id)
+
+    @property
+    def current_user_is_applied(self):
+        d = Delivery.query.filter_by(job_id=self.id, user_id=current_user.id).first()
+        return (d is not None)
     
     def __repr__(self):
         return '<Job:{}>'.format(self.name)
@@ -107,3 +113,25 @@ class Company(Base):
 
     def __repr__(self):
         return '<Company: {}>'.format(self.name)
+
+class Delivery(Base):
+    __tablename__ = 'delivery'
+
+    STATUS_WAITING = 1
+    STATUS_REJECT = 2
+    STATUS_ACCEPT = 3
+
+    id = db.Column(db.Integer, primary_key=True)
+    job_id = db.Column(db.Integer, db.ForeignKey('job.id', ondelete='SET NULL'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='SET NULL'))
+    company_id = db.Column(db.Integer)
+    status = db.Column(db.SmallInteger, default=STATUS_WAITING)
+    response = db.Column(db.String(256))
+
+    @property
+    def user(self):
+        return User.query.get(self.user_id)
+
+    @property
+    def job(self):
+        return Job.query.get(self.job_id)
