@@ -75,12 +75,8 @@ class Job(Base):
     requirement = db.Column(db.String(256))
     is_disable = db.Column(db.Boolean, default=False)
     company_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
-<<<<<<< 156b5c526b28d6e0c23ed205afdd9ef6f7ad91c4
     company = db.relationship('User', uselist=False, backref=db.backref('job',
                                                             lazy='dynamic'))
-=======
-    company = db.relationship('User', uselist=False, backref=db.backref('job', lazy='dynamic'))
->>>>>>> 修复bugs，实现企业的职位管理页面
     #company_detail = db.relationship('Company', uselist=False)
     
     @property
