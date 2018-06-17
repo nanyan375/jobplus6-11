@@ -153,7 +153,7 @@ def apply_rejectlist():
     if current_user.role != 20:
         abort(404)
     page = request.args.get('page', default=1, type=int)
-    q = Delivery.query.filter_by(company=current_user.id)
+    q = Delivery.query.filter_by(company_id=current_user.id)
     pagination = q.filter_by(status=Delivery.STATUS_REJECT).paginate(
         page = page,
         per_page = current_app.config['INDEX_PER_PAGE'],
