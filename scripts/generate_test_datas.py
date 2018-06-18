@@ -1,10 +1,10 @@
 import os
 import json
-from random import randint
-#from faker import Faker
+import random
+from faker import Faker
 from jobplus.models import db, User, Job, Company
 
-#fake = Faker()
+fake = Faker()
 
 user_lst = [
             ['admin', 'admin', 'admin@example.com', 'jobplus', 30],
@@ -23,19 +23,40 @@ def iter_users():
             role=user[4]
     )
 
+def iter_users_company():
+    with open(os.path.join(os.path.dirname(__file__), '..', 'datas', 'companies.json'), encoding='utf-8') as f:
+        users = json.load(f)
+    for user in users:
+        yield User(
+            name = user['title'],
+            username = fake.user_name(),
+            email=fake.email(),
+            role=User.ROLE_COMPANY,
+            password = 'jobplus'
+        )
+
 def iter_companies():
-    user = User.query.filter_by(name='ABC').first()
-    yield Company(
-        location='Beijing',
-        logo='test',
-        user_id=user.id
-    )
+    #users = User.query.filter_by(role=User.ROLE_COMPANY).all()
+    with open(os.path.join(os.path.dirname(__file__), '..', 'datas', 'companies.json'), encoding='utf-8') as f:
+        companies = json.load(f)
+    for company in companies:
+        user = User.query.filter_by(name=company['title']).first()
+        yield Company(
+            #name=company['title'],
+            logo=company['logo'],
+            site=company['site'],
+            description=company['desc'],
+            location=company['location'],
+            field=company['field'],
+            user = user
+        )
         
 def iter_jobs():
-    company = User.query.filter_by(name='ABC').first()
+    companies = User.query.filter_by(role=User.ROLE_COMPANY).all()
     with open(os.path.join(os.path.dirname(__file__), '..', 'datas', 'jobs.json'), encoding='utf-8') as f:
         jobs = json.load(f)
     for job in jobs:
+        company = random.choice(companies)
         yield Job(
             title=job['title'],
             salary=job['salary'],
@@ -49,6 +70,9 @@ def run():
     db.create_all()
     for user in iter_users():
         db.session.add(user)
+
+    for company_user in iter_users_company():
+        db.session.add(company_user)
     
     for company in iter_companies():
         db.session.add(company)   

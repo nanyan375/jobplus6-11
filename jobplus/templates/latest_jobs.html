@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block body %}
+<div class='slogan-container'>
+    <h1>Jobplus</h1>
+    <h2>一个专注于互联网求职，招聘的互联网平台</h2>
+</div>
+<ul class="nav nav-tabs list-title">
+    <li role="presentation" class="active"><a href="{{ url_for('front.index') }}">最新公司</a></li>
+            <li role="presentation" class="active"><a href="{{ url_for('front.latest_jobs') }}">最新职位</a></li>
+</ul>
+
+<div class="job-list">
+    {% for job in jobs %}
+    <div class="col-sm-6 col-md-4 course">
+        <div class="thumbnail">
+            <!-- 当职位上线时 -->
+            {% if not job.is_disable %}
+                <div class="caption">
+                    <a href="{{ job.url }}" target="_blank">
+                        <h4 class="job__name">{{ job.title }}</h4>
+                    </a>
+                    <p class="job__salary">{{ job.salary }}</p>
+                    <p class="job__location">{{ job.location }}</p>
+                    <a href="{{ job.company.url }}" target="_blank">
+                        <h4 class="job__company">{{ job.company.name }}</h4>
+                    </a>
+                    <p class="job__created_at">{{ job.created_at }}</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

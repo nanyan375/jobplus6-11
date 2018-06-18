@@ -3,13 +3,19 @@
 from flask import Blueprint, redirect, url_for, render_template, flash
 from jobplus.forms import LoginForm, CompanyRegisterForm, UserRegisterForm
 from flask_login import login_user, login_required, logout_user
-from jobplus.models import User
+from jobplus.models import User,Company, Job
 
 front=Blueprint('front',__name__)
 
 @front.route('/')
 def index():
-    return render_template('index.html')
+    companies = Company.query.order_by(Company.created_at.desc()).all()[:12]
+    return render_template('index.html', companies=companies)
+
+@front.route('/latest_jobs')
+def latest_jobs():
+    jobs = Job.query.order_by(Job.created_at.desc()).all()[:9]
+    return render_template('latest_jobs.html', jobs=jobs)
 
 @front.route('/login', methods=['GET','POST'])
 def login():
