@@ -4,7 +4,7 @@
 {% block title %}职位管理{% endblock %}
 
 {% block operation %}
-<a href="#" type="button" class="btn btn-primary">
+<a href="{{ url_for('admin.add_job') }}" type="button" class="btn btn-primary">
     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
     添加职位
 </a>
@@ -24,12 +24,12 @@
         {% for job in pagination.items %}
         <tr>
             <td>{{ job.title }}</td>
-            <td>{{ job.company.user.name }}</td>
+            <td>{{ job.company.name }}</td>
             <td>{{ job.created_at }}</td>
             <td>{% if job.is_disable %}下线{% else %}上线{% endif %}</td>
             <td>
                 <div class='btn group' role='group'>
-                    <a href="#" type='button'>
+                    <a href="{{ url_for('admin.edit_job', job_id=job.id) }}" type='button'>
                         编辑
                     </a>
                     {% if job.is_disable %}

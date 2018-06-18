@@ -96,7 +96,7 @@ def job_edit(job_id):
         abort(404)
     form = JobForm(obj=job)
     if form.validate_on_submit():
-        form.update_job(current_user)
+        form.update_job(job)
         flash('职位更新成功！', 'success')
         return redirect(url_for('company.company_admin'))
     return render_template('company/job_edit.html', form=form, job=job)
