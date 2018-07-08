@@ -1,4 +1,4 @@
-#-*- coding:utf-8 -*-#
+# -*- coding:utf-8 -*- #
 
 import json
 from flask import Blueprint, render_template, request, current_app, redirect, url_for, flash
@@ -10,14 +10,14 @@ user = Blueprint('user', __name__, url_prefix='/user')
 
 @user.route('/profile', methods=['GET', 'POST'])
 def profile():
-    #get_or_404()ÀïÃæµÄ²ÎÊıÓ¦¸ÃÊÇ¿Éµü´ú¶ÔÏó
+    #get_or_404()ï¿½ï¿½ï¿½ï¿½Ä²ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½Ç¿Éµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     user = current_user           #User.query.get_or_404(current_user)
     form = UserForm(obj=user)
     if form.validate_on_submit():
         form.update_user(user)
-        #ºº×ÖÌá½»³öÏÖ±àÂë´íÎó
-        flash('Personal information update successfully', 'success')
-        #Ìá½»ÒÔºóÓ¦¸Ã·µ»ØÖ÷Ò³
+        #ï¿½ï¿½ï¿½ï¿½ï¿½á½»ï¿½ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        flash('ä¸ªäººä¿¡æ¯æ›´æ–°æˆåŠŸï¼', 'success')
+        #ï¿½á½»ï¿½Ôºï¿½Ó¦ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½Ò³
         return redirect(url_for('front.index'))
     return render_template('user/profile.html', form=form, user=user)
 

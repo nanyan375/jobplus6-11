@@ -35,7 +35,7 @@ class User(Base, UserMixin):
     _password = db.Column('password', db.String(255), nullable=False)
     role = db.Column(db.SmallInteger, default=ROLE_USER)
     work_year = db.Column(db.Integer)
-    mobile = db.Column(db.Integer)
+    mobile = db.Column(db.String(32))
     resume_url = db.Column(db.String(255), unique=True)
     company_detail = db.relationship('Company') 
     is_disable = db.Column(db.Boolean, default=False)
