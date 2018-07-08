@@ -76,6 +76,7 @@ LouPlus Team 11 https://www.shiyanlou.com/louplus/python
 ## 测试账户
 
 数据库里已经写入了测试所需的各类账户
+
 类型 | 帐号 | 密码
 :-|:-:|:-:
 管理员 | admin@example.com | jobplus
